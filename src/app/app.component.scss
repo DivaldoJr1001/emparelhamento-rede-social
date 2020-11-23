@@ -1,0 +1,46 @@
+.header, .footer {
+  height: 10%;
+  background: rgb(75, 75, 255);
+  color: white;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  place-content: center;
+  font-size: x-large;
+  font-weight: bold;
+}
+
+.body {
+  height: 80%;
+}
+
+.footer {
+  padding: 1%;
+}
+
+.legenda {
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: 1rem;
+  grid-gap: 1rem;
+  width: fit-content;
+}
+
+.empresa, .usuario {
+  width: 3rem;
+  border: solid;
+  border-width: 1px;
+  border-color: black;
+}
+
+.usuario {
+  background: lightskyblue;
+  border-radius: 50%;
+}
+
+.empresa {
+  background: red;
+  border-radius: 20%;
+}

@@ -1,0 +1,35 @@
+<div class="outer-container">
+  <div class="graph-title">Conexões Usuário-Empresa</div>
+  <div class="graph-container" id="networkContainer" #networkContainer></div>
+
+  <button mat-flat-button class="algorithm-button">
+    Emparelhar Usuários e Empresas
+  </button>
+
+  <div class="buttons-grid">
+    <button mat-flat-button [matMenuTriggerFor]="menu" (click)="functionSettings.createMode = true">
+      <mat-icon>add</mat-icon>
+      Adicionar
+    </button>
+    <button mat-flat-button [matMenuTriggerFor]="menu" (click)="functionSettings.createMode = false">
+      <mat-icon>delete</mat-icon>
+      Deletar
+    </button>
+    <button mat-flat-button (click)="openImportExportDialog(true)">
+      <mat-icon>arrow_downward</mat-icon>
+      Importar
+    </button>
+    <button mat-flat-button (click)="openImportExportDialog(false)">
+      <mat-icon>arrow_upward</mat-icon>
+      Exportar
+    </button>
+  </div>
+</div>
+
+<mat-menu #menu="matMenu">
+  <button mat-menu-item (click)="openFunctionDialog('Usuário')" [disabled]="!functionSettings.createMode && !hasUsuario()">Usuário</button>
+  <button mat-menu-item (click)="openFunctionDialog('Empresa')" [disabled]="!functionSettings.createMode && !hasEmpresa()">Empresa</button>
+  <button mat-menu-item (click)="openFunctionDialog('Conexão')" [disabled]="menuConexaoDisabled()">
+    Conexão
+  </button>
+</mat-menu>

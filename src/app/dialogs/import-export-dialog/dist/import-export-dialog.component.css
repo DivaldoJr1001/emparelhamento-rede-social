@@ -1,0 +1,32 @@
+.header {
+  display: flex;
+  flex-direction: column;
+}
+
+.data-input {
+  height: 30rem;
+  width: 100%;
+  margin-top: 1rem;
+  border: solid;
+  border-color: black;
+  background: white;
+  color: black;
+}
+
+.error-message {
+  color: red;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.buttons-container {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+button {
+  color: white;
+  background-color: darkblue;
+}

@@ -1,0 +1,43 @@
+.outer-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  padding: 2%;
+  background: lightskyblue;
+}
+
+.graph-title {
+  font-size: x-large;
+  font-weight: bold;
+}
+
+.graph-container {
+  height: 70%;
+  width: 50%;
+  border: black 6px solid;
+  border-radius: 20px;
+  background: white;
+}
+
+.algorithm-button {
+  margin-top: 2%;
+  width: 50%;
+  color: white;
+  background-color: darkblue;
+}
+
+.buttons-grid {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-column-gap: 1rem;
+  grid-row-gap: 1rem;
+  margin-top: 1rem;
+  width: 50%;
+}
+
+.buttons-grid button {
+  color: white;
+  background-color: darkblue;
+}

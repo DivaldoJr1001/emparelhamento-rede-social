@@ -1,0 +1,75 @@
+<div class="outer-container">
+  <div class="header">
+    <div class="mat-h1">
+      <span *ngIf="this.data.createMode">Adicionar</span>
+      <span *ngIf="!this.data.createMode">Deletar</span>
+      {{this.data.functionTarget}}
+    </div>
+    <div>
+      <span *ngIf="this.data.createMode">Crie </span>
+      <span *ngIf="!this.data.createMode">Exclua </span>
+      <span *ngIf="this.data.functionTarget == 'Usuário'">um <span *ngIf="this.data.createMode">novo </span>usuário </span>
+      <span *ngIf="this.data.functionTarget != 'Usuário'">uma <span *ngIf="this.data.createMode">nova </span>{{toLowerCaseFunction(this.data.functionTarget)}} </span>
+      <span *ngIf="this.data.createMode">no </span>
+      <span *ngIf="!this.data.createMode">do </span>
+      grafo
+    </div>
+  </div>
+
+  <div class="data-input" class="full-width">
+    <mat-form-field *ngIf="this.data.createMode && this.data.functionTarget != 'Conexão'" class="full-width">
+      <mat-label>Nome</mat-label>
+      <input matInput [formControl]="nodeLabel">
+    </mat-form-field>
+
+    <div *ngIf="this.data.createMode && this.data.functionTarget == 'Conexão'" class="edge-selectors">
+      <mat-form-field class="full-width">
+        <mat-label>Empresa</mat-label>
+        <mat-select [formControl]="empresaSelecionada">
+          <mat-option *ngFor="let empresa of empresasArray" [value]="empresa">
+            {{empresa.label}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field class="full-width">
+        <mat-label>Usuário</mat-label>
+        <mat-select [formControl]="usuarioSelecionado">
+          <mat-option *ngFor="let usuario of usuariosArray" [value]="usuario">
+            {{usuario.label}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field *ngIf="!this.data.createMode" class="full-width">
+      <mat-label>Selecione</mat-label>
+      <mat-select *ngIf="this.data.functionTarget == 'Usuário'" [formControl]="objetoRemocaoControl">
+        <mat-option *ngFor="let usuario of usuariosArray" [value]="usuario">
+          {{usuario.label}}
+        </mat-option>
+      </mat-select>
+      <mat-select *ngIf="this.data.functionTarget == 'Empresa'" [formControl]="objetoRemocaoControl">
+        <mat-option *ngFor="let empresa of empresasArray" [value]="empresa">
+          {{empresa.label}}
+        </mat-option>
+      </mat-select>
+      <mat-select *ngIf="this.data.functionTarget == 'Conexão'" [formControl]="objetoRemocaoControl">
+        <mat-option *ngFor="let edge of edgeArray" [value]="edge">
+          {{edgeName(edge)}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <span class="error-message" [class.hidden]="!edgeCreationError">* Essa conexão já existe!</span>
+  <div class="buttons-container">
+    <button mat-flat-button mat-dialog-close>
+      Voltar
+    </button>
+    <button mat-flat-button (click)="executeFunction()"
+      [disabled]="!(nodeLabel.value.length > 0 || objetoRemocaoControl.value != undefined || usuarioSelecionado.value != undefined &&  empresaSelecionada.value != undefined)">
+      Confirmar
+    </button>
+  </div>
+</div>

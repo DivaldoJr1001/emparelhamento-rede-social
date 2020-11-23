@@ -1,0 +1,29 @@
+.outer-container {
+  min-width: 30rem;
+}
+
+.data-input {
+  margin-top: 1rem;
+}
+
+.error-message {
+  color: red;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.buttons-container {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+button {
+  color: white;
+  background-color: darkblue;
+}
+
+.full-width {
+  width: 100%;
+}

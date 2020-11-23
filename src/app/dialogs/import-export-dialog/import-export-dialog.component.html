@@ -1,0 +1,22 @@
+<div class="header">
+  <div class="mat-h1">
+    <span *ngIf="importState">Importar Dados</span>
+    <span *ngIf="!importState">Exportar Dados</span>
+  </div>
+  <div>
+    <span *ngIf="importState">Importe dados de usuários, empresas e conexões com um JSON</span>
+    <span *ngIf="!importState">Exporte dados de usuários, empresas e conexões como um JSON</span>
+  </div>
+</div>
+
+<textarea matInput class="data-input" [formControl]="writtenData"></textarea>
+<span class="error-message" [class.hidden]="!importError">* O JSON está formatado incorretamente!</span>
+
+<div class="buttons-container">
+  <button mat-flat-button mat-dialog-close	>
+    Voltar
+  </button>
+  <button mat-flat-button [disabled]="writtenData.value.length == 0" *ngIf="importState" (click)="importData()">
+    Confirmar
+  </button>
+</div>
