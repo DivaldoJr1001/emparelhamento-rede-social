@@ -32,25 +32,12 @@ var ImportExportDialogComponent = /** @class */ (function () {
     };
     ImportExportDialogComponent.prototype.importData = function () {
         try {
-            this.backupData = {
-                importState: this.importState,
-                nodesDataSet: new vis.DataSet(),
-                edgesDataSet: new vis.DataSet()
-            };
-            for (var _i = 0, _a = this.data.nodesDataSet.get(); _i < _a.length; _i++) {
-                var node = _a[_i];
-                this.backupData.nodesDataSet.add(node);
-            }
-            for (var _b = 0, _c = this.data.edgesDataSet.get(); _b < _c.length; _b++) {
-                var edge = _c[_b];
-                this.backupData.edgesDataSet.add(edge);
-            }
+            this.newNodesDataSet = new vis.DataSet();
+            this.newEdgesDataSet = new vis.DataSet();
             this.importError = false;
             var importedObject = JSON.parse(this.writtenData.value);
-            this.data.nodesDataSet.clear();
-            this.data.edgesDataSet.clear();
-            for (var _d = 0, _e = importedObject.nodes; _d < _e.length; _d++) {
-                var node = _e[_d];
+            for (var _i = 0, _a = importedObject.nodes; _i < _a.length; _i++) {
+                var node = _a[_i];
                 if (node.shape !== 'box' && node.shape !== 'ellipse') {
                     node.shape = 'ellipse';
                     node.color.background = 'lightskyblue';
@@ -76,48 +63,52 @@ var ImportExportDialogComponent = /** @class */ (function () {
                     throw new Error('Duplicated label');
                 }
                 else {
-                    this.data.nodesDataSet.add(node);
+                    this.newNodesDataSet.add(node);
                 }
             }
-            for (var _f = 0, _g = importedObject.edges; _f < _g.length; _f++) {
-                var edge = _g[_f];
+            for (var _b = 0, _c = importedObject.edges; _b < _c.length; _b++) {
+                var edge = _c[_b];
                 edge.dashes = true;
                 edge.color.color = 'black';
                 edge.color.inherit = false;
-                if (this.data.nodesDataSet.get(edge.from).shape === 'ellipse' &&
-                    this.data.nodesDataSet.get(edge.to).shape !== 'box') {
+                edge.label = undefined;
+                if (this.newNodesDataSet.get(edge.from).shape === 'ellipse' &&
+                    this.newNodesDataSet.get(edge.to).shape !== 'box') {
                     var aux = edge.from;
                     edge.from = edge.to;
                     edge.to = aux;
                 }
-                else if (this.data.nodesDataSet.get(edge.from).shape === 'ellipse') {
+                else if (this.newNodesDataSet.get(edge.from).shape === 'ellipse') {
                     throw new Error('Edge cannot start from a user');
                 }
-                else if (this.data.nodesDataSet.get(edge.to).shape === 'box') {
+                else if (this.newNodesDataSet.get(edge.to).shape === 'box') {
                     throw new Error('Edge cannot end at a business');
                 }
                 else if (this.duplicatedEdge(edge.to, edge.from)) {
                     throw new Error('Duplicated edge');
                 }
                 else {
-                    this.data.edgesDataSet.add(edge);
+                    this.newEdgesDataSet.add(edge);
                 }
             }
-            this.dialogRef.close();
+            var responseObject = {
+                importState: this.importState,
+                nodesDataSet: this.newNodesDataSet,
+                edgesDataSet: this.newEdgesDataSet
+            };
+            this.dialogRef.close(responseObject);
         }
         catch (e) {
             console.log(e);
             this.importError = true;
-            this.data = this.backupData;
-            console.log(this.data);
         }
     };
     ImportExportDialogComponent.prototype.duplicatedLabel = function (label, shape) {
-        var nodes = this.data.nodesDataSet.get();
+        var nodes = this.newNodesDataSet.get();
         return nodes.findIndex(function (node) { return node.label === label && node.shape === shape; }) > -1;
     };
     ImportExportDialogComponent.prototype.duplicatedEdge = function (to, from) {
-        var nodes = this.data.edgesDataSet.get();
+        var nodes = this.newEdgesDataSet.get();
         return nodes.findIndex(function (edge) { return edge.to === to && edge.from === from; }) > -1 ||
             nodes.findIndex(function (edge) { return edge.to === from && edge.from === to; }) > -1;
     };

@@ -24,8 +24,8 @@
 .algorithm-button {
   margin-top: 2%;
   width: 50%;
-  color: white;
-  background-color: darkblue;
+  color: white !important;
+  background-color: darkblue !important;
 }
 
 .buttons-grid {
@@ -38,6 +38,10 @@
 }
 
 .buttons-grid button {
-  color: white;
-  background-color: darkblue;
+  color: white !important;
+  background-color: darkblue !important;
+}
+
+.disabled-button, .mat-flat-button.mat-accent[disabled], .mat-flat-button.mat-primary[disabled], .mat-flat-button.mat-warn[disabled], .mat-flat-button[disabled][disabled] {
+  opacity: 0.5;
 }

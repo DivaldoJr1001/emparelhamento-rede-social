@@ -26,6 +26,8 @@ export class FunctionDialogComponent implements OnInit {
 
   objetoRemocaoControl = new FormControl(undefined);
 
+  usuarioCreationError = false;
+  empresaCreationError = false;
   edgeCreationError = false;
 
   constructor(
@@ -55,7 +57,10 @@ export class FunctionDialogComponent implements OnInit {
 
   executeFunction(): void {
     try {
+      this.usuarioCreationError = false;
+      this.empresaCreationError = false;
       this.edgeCreationError = false;
+
       if (this.data.createMode) {
         if (this.data.functionTarget !== 'Conexão') {
           const ids: number[] = this.data.nodesDataSet.getIds();
@@ -74,6 +79,11 @@ export class FunctionDialogComponent implements OnInit {
               border: 'black'
             };
 
+            if (this.data.nodesDataSet.get().find(node => node.label === newNode.label && node.shape === newNode.shape)) {
+              this.usuarioCreationError = true;
+              throw new Error();
+            }
+
           } else if (this.data.functionTarget === 'Empresa') {
             newNode.shape = 'box';
             newNode.font = { color: 'white' };
@@ -85,6 +95,11 @@ export class FunctionDialogComponent implements OnInit {
                 border: 'black'
               }
             };
+
+            if (this.data.nodesDataSet.get().find(node => node.label === newNode.label && node.shape === newNode.shape)) {
+              this.empresaCreationError = true;
+              throw new Error();
+            }
           }
 
           this.data.nodesDataSet.add(newNode);
@@ -107,6 +122,7 @@ export class FunctionDialogComponent implements OnInit {
           if (this.edgeArray.findIndex(edge => edge.to === newEdge.to && edge.from === newEdge.from) < 0) {
             this.data.edgesDataSet.add(newEdge);
           } else {
+            this.edgeCreationError = true;
             throw new Error();
           }
 
@@ -127,7 +143,6 @@ export class FunctionDialogComponent implements OnInit {
       this.dialogRef.close();
     } catch (e) {
       console.log(e);
-      this.edgeCreationError = true;
     }
   }
 

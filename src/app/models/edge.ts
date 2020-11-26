@@ -7,4 +7,5 @@ export interface Edge {
     color: string,
     inherit: boolean
   };
+  label?: string;
 }

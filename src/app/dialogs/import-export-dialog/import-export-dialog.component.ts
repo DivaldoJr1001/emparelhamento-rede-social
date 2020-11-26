@@ -20,7 +20,8 @@ export class ImportExportDialogComponent implements OnInit {
 
   importError = false;
 
-  backupData: ImportExportSettings;
+  newNodesDataSet;
+  newEdgesDataSet;
 
   constructor(
     public dialogRef: MatDialogRef<ImportExportDialogComponent>,
@@ -42,24 +43,11 @@ export class ImportExportDialogComponent implements OnInit {
 
   importData() {
     try {
-      this.backupData = {
-        importState: this.importState,
-        nodesDataSet: new vis.DataSet(),
-        edgesDataSet: new vis.DataSet()
-      };
-
-      for (const node of this.data.nodesDataSet.get()) {
-        this.backupData.nodesDataSet.add(node);
-      }
-      for (const edge of this.data.edgesDataSet.get()) {
-        this.backupData.edgesDataSet.add(edge);
-      }
+      this.newNodesDataSet =  new vis.DataSet();
+      this.newEdgesDataSet =  new vis.DataSet();
 
       this.importError = false;
       const importedObject: ImportExportObject = JSON.parse(this.writtenData.value);
-
-      this.data.nodesDataSet.clear();
-      this.data.edgesDataSet.clear();
 
       for (const node of importedObject.nodes) {
         if (node.shape !== 'box' && node.shape !== 'ellipse') {
@@ -88,7 +76,7 @@ export class ImportExportDialogComponent implements OnInit {
         if (this.duplicatedLabel(node.label, node.shape)) {
           throw new Error('Duplicated label');
         } else {
-          this.data.nodesDataSet.add(node);
+          this.newNodesDataSet.add(node);
         }
       }
 
@@ -96,44 +84,47 @@ export class ImportExportDialogComponent implements OnInit {
         edge.dashes = true;
         edge.color.color = 'black';
         edge.color.inherit = false;
+        edge.label = undefined;
 
-        if (this.data.nodesDataSet.get(edge.from).shape === 'ellipse' &&
-          this.data.nodesDataSet.get(edge.to).shape !== 'box') {
+        if (this.newNodesDataSet.get(edge.from).shape === 'ellipse' &&
+        this.newNodesDataSet.get(edge.to).shape !== 'box') {
             const aux = edge.from;
             edge.from = edge.to;
             edge.to = aux;
-        } else if (this.data.nodesDataSet.get(edge.from).shape === 'ellipse') {
+        } else if (this.newNodesDataSet.get(edge.from).shape === 'ellipse') {
           throw new Error('Edge cannot start from a user');
-        } else if (this.data.nodesDataSet.get(edge.to).shape === 'box') {
+        } else if (this.newNodesDataSet.get(edge.to).shape === 'box') {
           throw new Error('Edge cannot end at a business');
         } else if (this.duplicatedEdge(edge.to, edge.from)) {
           throw new Error('Duplicated edge');
         } else {
-          this.data.edgesDataSet.add(edge);
+          this.newEdgesDataSet.add(edge);
         }
       }
 
-      this.dialogRef.close();
+      const responseObject: ImportExportSettings = {
+        importState: this.importState,
+        nodesDataSet: this.newNodesDataSet,
+        edgesDataSet: this.newEdgesDataSet
+      };
+
+      this.dialogRef.close(responseObject);
     } catch (e) {
       console.log(e);
       this.importError = true;
-      this.data = this.backupData;
-      console.log(this.data);
     }
   }
 
   duplicatedLabel(label: string, shape: string | undefined): boolean {
-    const nodes: Node[] = this.data.nodesDataSet.get();
+    const nodes: Node[] = this.newNodesDataSet.get();
 
     return nodes.findIndex(node => node.label === label && node.shape === shape) > -1;
   }
 
   duplicatedEdge(to: number, from: number): boolean {
-    const nodes: Edge[] = this.data.edgesDataSet.get();
+    const nodes: Edge[] = this.newEdgesDataSet.get();
 
     return nodes.findIndex(edge => edge.to === to && edge.from === from) > -1 ||
       nodes.findIndex(edge => edge.to === from && edge.from === to) > -1;
   }
-
-
 }

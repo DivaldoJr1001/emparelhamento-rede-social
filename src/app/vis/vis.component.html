@@ -2,24 +2,28 @@
   <div class="graph-title">Conexões Usuário-Empresa</div>
   <div class="graph-container" id="networkContainer" #networkContainer></div>
 
-  <button mat-flat-button class="algorithm-button">
+  <button mat-flat-button class="algorithm-button" (click)="runAlgorithm()" *ngIf="!algorithmFinished" [disabled]="algorithmRunning || !canRunAlgorithm()">
     Emparelhar Usuários e Empresas
   </button>
 
+  <button mat-flat-button class="algorithm-button" (click)="resetAlgorithm()" *ngIf="algorithmFinished">
+    Resetar Dados
+  </button>
+
   <div class="buttons-grid">
-    <button mat-flat-button [matMenuTriggerFor]="menu" (click)="functionSettings.createMode = true">
+    <button mat-flat-button [matMenuTriggerFor]="menu" (click)="functionSettings.createMode = true" [class.disabled-button]="algorithmRunning || algorithmFinished" [disabled]="algorithmRunning || algorithmFinished">
       <mat-icon>add</mat-icon>
       Adicionar
     </button>
-    <button mat-flat-button [matMenuTriggerFor]="menu" (click)="functionSettings.createMode = false">
+    <button mat-flat-button [matMenuTriggerFor]="menu" (click)="functionSettings.createMode = false" [class.disabled-button]="algorithmRunning || algorithmFinished" [disabled]="algorithmRunning || algorithmFinished">
       <mat-icon>delete</mat-icon>
       Deletar
     </button>
-    <button mat-flat-button (click)="openImportExportDialog(true)">
+    <button mat-flat-button (click)="openImportExportDialog(true)" [class.disabled-button]="algorithmRunning || algorithmFinished" [disabled]="algorithmRunning || algorithmFinished">
       <mat-icon>arrow_downward</mat-icon>
       Importar
     </button>
-    <button mat-flat-button (click)="openImportExportDialog(false)">
+    <button mat-flat-button (click)="openImportExportDialog(false)" [class.disabled-button]="algorithmRunning || algorithmFinished" [disabled]="algorithmRunning || algorithmFinished">
       <mat-icon>arrow_upward</mat-icon>
       Exportar
     </button>

@@ -62,7 +62,9 @@
     </mat-form-field>
   </div>
 
-  <span class="error-message" [class.hidden]="!edgeCreationError">* Essa conexão já existe!</span>
+  <span class="error-message" *ngIf="this.data.functionTarget == 'Usuário'" [class.hidden]="!usuarioCreationError">* Já existe um usuário com esse nome!</span>
+  <span class="error-message" *ngIf="this.data.functionTarget == 'Empresa'" [class.hidden]="!empresaCreationError">* Já existe uma empresa com esse nome!</span>
+  <span class="error-message" *ngIf="this.data.functionTarget == 'Conexão'" [class.hidden]="!edgeCreationError">* Essa conexão já existe!</span>
   <div class="buttons-container">
     <button mat-flat-button mat-dialog-close>
       Voltar

@@ -25,6 +25,8 @@ var FunctionDialogComponent = /** @class */ (function () {
         this.usuarioSelecionado = new forms_1.FormControl(undefined);
         this.empresaSelecionada = new forms_1.FormControl(undefined);
         this.objetoRemocaoControl = new forms_1.FormControl(undefined);
+        this.usuarioCreationError = false;
+        this.empresaCreationError = false;
         this.edgeCreationError = false;
     }
     FunctionDialogComponent.prototype.ngOnInit = function () {
@@ -48,27 +50,33 @@ var FunctionDialogComponent = /** @class */ (function () {
     };
     FunctionDialogComponent.prototype.executeFunction = function () {
         try {
+            this.usuarioCreationError = false;
+            this.empresaCreationError = false;
             this.edgeCreationError = false;
             if (this.data.createMode) {
                 if (this.data.functionTarget !== 'Conexão') {
                     var ids = this.data.nodesDataSet.getIds();
-                    var id = parseInt(ids.pop() + '', 10) + 1;
+                    var id = parseInt(ids.pop() + '', 10) + 1 || 1;
                     var label = this.nodeLabel.value;
-                    var newNode = {
+                    var newNode_1 = {
                         id: id,
                         label: label
                     };
                     if (this.data.functionTarget === 'Usuário') {
-                        newNode.shape = 'ellipse';
-                        newNode.color = {
+                        newNode_1.shape = 'ellipse';
+                        newNode_1.color = {
                             background: 'lightskyblue',
                             border: 'black'
                         };
+                        if (this.data.nodesDataSet.get().find(function (node) { return node.label === newNode_1.label && node.shape === newNode_1.shape; })) {
+                            this.usuarioCreationError = true;
+                            throw new Error();
+                        }
                     }
                     else if (this.data.functionTarget === 'Empresa') {
-                        newNode.shape = 'box';
-                        newNode.font = { color: 'white' };
-                        newNode.color = {
+                        newNode_1.shape = 'box';
+                        newNode_1.font = { color: 'white' };
+                        newNode_1.color = {
                             background: 'red',
                             border: 'black',
                             highlight: {
@@ -76,12 +84,16 @@ var FunctionDialogComponent = /** @class */ (function () {
                                 border: 'black'
                             }
                         };
+                        if (this.data.nodesDataSet.get().find(function (node) { return node.label === newNode_1.label && node.shape === newNode_1.shape; })) {
+                            this.empresaCreationError = true;
+                            throw new Error();
+                        }
                     }
-                    this.data.nodesDataSet.add(newNode);
+                    this.data.nodesDataSet.add(newNode_1);
                 }
                 else {
                     var ids = this.data.edgesDataSet.getIds();
-                    var id = parseInt(ids.pop() + '', 10) + 1;
+                    var id = parseInt(ids.pop() + '', 10) + 1 || 1;
                     var newEdge_1 = {
                         id: id,
                         from: this.empresaSelecionada.value.id,
@@ -96,6 +108,7 @@ var FunctionDialogComponent = /** @class */ (function () {
                         this.data.edgesDataSet.add(newEdge_1);
                     }
                     else {
+                        this.edgeCreationError = true;
                         throw new Error();
                     }
                 }
@@ -116,7 +129,6 @@ var FunctionDialogComponent = /** @class */ (function () {
         }
         catch (e) {
             console.log(e);
-            this.edgeCreationError = true;
         }
     };
     FunctionDialogComponent = __decorate([
