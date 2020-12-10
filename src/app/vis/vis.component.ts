@@ -8,6 +8,7 @@ import { FunctionSettings } from '../models/function-settings';
 import { ImportExportSettings } from '../models/import-export-settings';
 import { Edge } from '../models/edge';
 import { runHopcroftKarp } from '../utils/hopcroft–karp.util';
+import { environment } from 'src/environments/environment';
 declare var vis: any;
 
 @Component({
@@ -23,8 +24,14 @@ export class VisComponent implements AfterViewInit {
 
   nodesDataSet = new vis.DataSet();
   edgesDataSet = new vis.DataSet();
+  2
 
+  SQL
+  
+  4
+  
   algorithmRunning = false;
+  algorithmPaused = false;
   algorithmFinished = false;
 
   functionSettings: FunctionSettings = {
@@ -56,9 +63,18 @@ export class VisComponent implements AfterViewInit {
       edgesDataSet: this.edgesDataSet
     };
 
-    const options = {};
+    var options = {
+      physics: {
+        enabled: false
+      }
+    };
 
     this.network = new vis.Network(this.networkContainer.nativeElement, data, options);
+
+    this.network.on("stabilizationIterationsDone", function () {
+      this.network.setOptions( { physics: false } );
+    });
+
   }
 
   openImportExportDialog(importState: boolean) {
@@ -153,4 +169,11 @@ export class VisComponent implements AfterViewInit {
 
     this.cdr.detectChanges();
   }
+
+  pauseAlgorithm(){
+    environment.paused = !environment.paused;
+    this.algorithmPaused = !this.algorithmPaused;
+  }
 }
+
+/* {"nodes":[{"id":1,"label":"1","shape":"ellipse","color":{"background":"lightskyblue","border":"black"},"x":-200,"y":-200},{"id":2,"label":"2","shape":"ellipse","color":{"background":"lightskyblue","border":"black"},"x":-200,"y":-125},{"id":3,"label":"3","shape":"ellipse","color":{"background":"lightskyblue","border":"black"},"x":-200,"y":-50},{"id":4,"label":"4","shape":"ellipse","color":{"background":"lightskyblue","border":"black"},"x":-200,"y":25},{"id":5,"label":"5","shape":"ellipse","color":{"background":"lightskyblue","border":"black"},"x":-200,"y":100},{"id":6,"label":"Java","shape":"box","font":{"color":"white"},"color":{"background":"red","border":"black","highlight":{"background":"palevioletred","border":"black"}},"x":150,"y":-200},{"id":7,"label":"Python","shape":"box","font":{"color":"white"},"color":{"background":"red","border":"black","highlight":{"background":"palevioletred","border":"black"}},"x":150,"y":-125},{"id":8,"label":"Web","shape":"box","font":{"color":"white"},"color":{"background":"red","border":"black","highlight":{"background":"palevioletred","border":"black"}},"x":150,"y":-50},{"id":9,"label":"SQL","shape":"box","font":{"color":"white"},"color":{"background":"red","border":"black","highlight":{"background":"palevioletred","border":"black"}},"x":150,"y":25},{"id":10,"label":"C++","shape":"box","font":{"color":"white"},"color":{"background":"red","border":"black","highlight":{"background":"palevioletred","border":"black"}},"x":150,"y":100}],"edges":[{"id":1,"from":6,"to":1,"color":{"color":"black","inherit":false},"dashes":true},{"id":2,"from":7,"to":3,"color":{"color":"black","inherit":false},"dashes":true},{"id":3,"from":8,"to":1,"color":{"color":"black","inherit":false},"dashes":true},{"id":4,"from":8,"to":3,"color":{"color":"black","inherit":false},"dashes":true},{"id":5,"from":8,"to":4,"color":{"color":"black","inherit":false},"dashes":true},{"id":6,"from":8,"to":5,"color":{"color":"black","inherit":false},"dashes":true},{"id":7,"from":9,"to":2,"color":{"color":"black","inherit":false},"dashes":true},{"id":8,"from":9,"to":4,"color":{"color":"black","inherit":false},"dashes":true},{"id":9,"from":10,"to":2,"color":{"color":"black","inherit":false},"dashes":true}]} */

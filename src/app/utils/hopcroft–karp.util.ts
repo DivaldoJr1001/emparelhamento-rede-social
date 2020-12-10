@@ -120,7 +120,6 @@ async function exploreNode(node: HKNode) {
 
   if (currentPath.length > 0) {
     currentPath.pop();
-    //console.log(augmentingPath.length === 0)
   }
   currentDepth--;
 }
