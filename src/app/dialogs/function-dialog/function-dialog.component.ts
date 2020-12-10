@@ -4,6 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Edge } from 'src/app/models/edge';
 import { FunctionSettings } from 'src/app/models/function-settings';
 import { Node } from 'src/app/models/node';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-function-dialog',
@@ -73,15 +74,20 @@ export class FunctionDialogComponent implements OnInit {
           };
 
           if (this.data.functionTarget === 'Usuário') {
+            console.log(newNode.id);
             newNode.shape = 'ellipse';
             newNode.color = {
               background: 'lightskyblue',
               border: 'black'
             };
+            newNode.x = -200;
+            newNode.y = -200 + environment.idU * 75;
 
             if (this.data.nodesDataSet.get().find(node => node.label === newNode.label && node.shape === newNode.shape)) {
               this.usuarioCreationError = true;
               throw new Error();
+            } else {
+              environment.idU++;
             }
 
           } else if (this.data.functionTarget === 'Empresa') {
@@ -95,11 +101,16 @@ export class FunctionDialogComponent implements OnInit {
                 border: 'black'
               }
             };
+            newNode.x = 150;
+            newNode.y = -200 + environment.idE * 75;
 
             if (this.data.nodesDataSet.get().find(node => node.label === newNode.label && node.shape === newNode.shape)) {
               this.empresaCreationError = true;
               throw new Error();
+            } else {
+              environment.idE++;
             }
+
           }
 
           this.data.nodesDataSet.add(newNode);

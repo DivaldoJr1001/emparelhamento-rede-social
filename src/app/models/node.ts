@@ -13,4 +13,6 @@ export interface Node {
   font?: {
     color: string;
   };
+  x?: number;
+  y?: number;
 }

@@ -2,6 +2,7 @@ import { Edge } from '../models/edge';
 import { HopcroftKarpObject } from '../models/hopcroft-karp-object';
 import { Node } from '../models/node';
 import { delay } from './delay.util';
+import { environment } from 'src/environments/environment';
 
 let empresasNodes: HKNode[];
 let usuariosNodes: HKNode[];
@@ -33,60 +34,64 @@ export async function runHopcroftKarp(datasets: HopcroftKarpObject) {
   currentPath = [];
 
   do {
-    augmentingPath = [];
-    minDepth = Infinity;
-    currentDepth = -1;
+      augmentingPath = [];
+      minDepth = Infinity;
+      currentDepth = -1;
 
-    const currentNodes = empresasNodes.filter(node => !node.matched);
+      const currentNodes = empresasNodes.filter(node => !node.matched);
 
-    for (const node of currentNodes) {
-      exploreNode(node);
-    }
-
-    for (const edge of augmentingPath) {
-      const empresaNode = empresasNodes.find(empresa => empresa.id === edge.from);
-      const usuarioNode = usuariosNodes.find(usuario => usuario.id === edge.to);
-      const edgeIndex = chosenEdges.findIndex(chosenEdge => chosenEdge === edge);
-
-      if (edgeIndex < 0) {
-        chosenEdges.push(edge);
-        edge.dashes = false;
-        edge.color.color = 'green';
-        edge.color.inherit = false;
-        datasets.edgesDataSet.update(edge);
-        empresaNode.matched = true;
-        usuarioNode.matched = true;
-      } else {
-        chosenEdges.splice(edgeIndex, 1);
-        edge.dashes = true;
-        edge.color.color = 'black';
-        edge.color.inherit = false;
-        datasets.edgesDataSet.update(edge);
+      for (const node of currentNodes) {
+        exploreNode(node);
       }
 
-      await delay(2000);
-    }
+      for (let i = 0; i < augmentingPath.length; i++) {
+        if(!environment.paused){
+          const edge = augmentingPath[i];
+          const empresaNode = empresasNodes.find(empresa => empresa.id === edge.from);
+          const usuarioNode = usuariosNodes.find(usuario => usuario.id === edge.to);
+          const edgeIndex = chosenEdges.findIndex(chosenEdge => chosenEdge === edge);
+  
+          if (edgeIndex < 0) {
+            chosenEdges.push(edge);
+            edge.dashes = false;
+            edge.color.color = 'red';
+            edge.color.inherit = true;
+            datasets.edgesDataSet.update(edge);
+            empresaNode.matched = true;
+            usuarioNode.matched = true;
+          } else {
+            chosenEdges.splice(edgeIndex, 1);
+            edge.dashes = true;
+            edge.color.color = 'limegreen';
+            edge.color.inherit = false;
+            datasets.edgesDataSet.update(edge);
+          }
+          await delay(2000);
+        }else{
+          i--;
+          await delay(500);
+        }
+      }
 
-    empresasNodes.map(node => {
-      node.parents = [];
-      return node;
-    });
+      empresasNodes.map(node => {
+        node.parents = [];
+        return node;
+      });
 
-    usuariosNodes.map(node => {
-      node.parents = [];
-      return node;
-    });
-
+      usuariosNodes.map(node => {
+        node.parents = [];
+        return node;
+      });
+    
   } while (augmentingPath.length > 0);
 }
 
-function exploreNode(node: HKNode) {
+async function exploreNode(node: HKNode) {
   currentDepth++;
   const isEmpresa = (node.shape === 'box');
-
   if (currentDepth < minDepth) {
     if (isEmpresa) {
-      const linkedEdges: Edge[] = allEdges.filter(edge => edge.from === node.id &&
+      const linkedEdges: Edge[] = allEdges.filter(edge => edge.from === node.id && 
         node.parents.findIndex(parent => parent.id === edge.to) < 0);
 
       for (const edge of linkedEdges) {
@@ -101,7 +106,6 @@ function exploreNode(node: HKNode) {
     } else if (node.matched) {
       const linkedEdge = chosenEdges.find(edge => edge.to === node.id);
       const nextNode = empresasNodes.find(empresaNode => empresaNode.id === linkedEdge.from);
-
       nextNode.parents.push(node);
       currentPath.push(linkedEdge);
       exploreNode(nextNode);
@@ -116,6 +120,7 @@ function exploreNode(node: HKNode) {
 
   if (currentPath.length > 0) {
     currentPath.pop();
+    //console.log(augmentingPath.length === 0)
   }
   currentDepth--;
 }

@@ -1,9 +1,9 @@
 .outer-container {
-  display: flex;
-  flex-direction: column;
+  //display: flex;
+  //flex-direction: column;
   height: 100%;
-  align-items: center;
-  justify-content: center;
+  //align-items: center;
+  //justify-content: center;
   padding: 2%;
   background: lightskyblue;
 }
@@ -14,11 +14,22 @@
 }
 
 .graph-container {
-  height: 70%;
-  width: 50%;
+  float: left;
+  height: 450px;
+  width: 60%;
   border: black 6px solid;
   border-radius: 20px;
   background: white;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  align-items: center;
+  //justify-content: center;
+  padding: 2%;
+  background: lightskyblue;
 }
 
 .algorithm-button {
